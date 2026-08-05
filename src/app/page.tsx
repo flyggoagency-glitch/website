@@ -6,6 +6,8 @@ import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
 import Link from "next/link";
 import { Footer } from '@/components/Footer';
+import { collection, query, orderBy, getDocs } from 'firebase/firestore';
+import { db } from '@/lib/firebase';
 
 function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -301,9 +303,6 @@ const CTASection = () => {
                 </svg>
               </Link>
             </div>
-            <button className="bg-white/10 hover:bg-white/20 transition-colors text-white px-[32px] py-[16px] text-[18px] font-medium rounded-[50px] whitespace-nowrap border border-white/10 hover:border-white/30">
-              Book a call
-            </button>
           </div>
         </div>
       </div>
@@ -403,7 +402,7 @@ const AnimatedBackgroundLines = () => {
 
 export default function FlyggoLandingPage() {
   // Companies for ticker
-  const companies = [
+  const [companies, setCompanies] = useState<string[]>([
     "AANOOR GLOBAL EXPORTS",
     "THEBARBACK",
     "ACADAMKEY",
@@ -413,7 +412,27 @@ export default function FlyggoLandingPage() {
     "IMS SOLAR",
     "REATILTALENT",
     "COCO CRAFT EXPORTS"
-  ];
+  ]);
+
+  useEffect(() => {
+    const fetchLaunches = async () => {
+      try {
+        const q = query(collection(db, 'launches'), orderBy('createdAt', 'desc'));
+        const querySnapshot = await getDocs(q);
+        if (!querySnapshot.empty) {
+          const fetchedCompanies: string[] = [];
+          querySnapshot.forEach((doc) => {
+            fetchedCompanies.push(doc.data().name);
+          });
+          setCompanies(fetchedCompanies);
+        }
+      } catch (err) {
+        console.error("Error fetching launches:", err);
+      }
+    };
+    fetchLaunches();
+  }, []);
+
   // Repeat for seamless loop
   const tickerItems = [...companies, ...companies, ...companies];
 

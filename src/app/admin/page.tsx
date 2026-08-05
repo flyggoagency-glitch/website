@@ -58,6 +58,24 @@ type ComplaintEntry = {
   status: string;
 };
 
+type LaunchEntry = {
+  id: string;
+  name: string;
+  createdAt: any;
+};
+
+type CareerEntry = {
+  id: string;
+  name: string;
+  age: string;
+  phone: string;
+  email: string;
+  gender: string;
+  experience: string;
+  location: string;
+  submittedAt: any;
+};
+
 export default function AdminPanel() {
   // Auth States
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -66,13 +84,15 @@ export default function AdminPanel() {
   const [error, setError] = useState('');
 
   // Dashboard States
-  const [activeTab, setActiveTab] = useState<'projects' | 'ideas' | 'offers' | 'offer_leads' | 'complaints'>('projects');
+  const [activeTab, setActiveTab] = useState<'projects' | 'ideas' | 'offers' | 'offer_leads' | 'complaints' | 'launches' | 'careers'>('projects');
   
   const [projects, setProjects] = useState<ProjectEntry[]>([]);
   const [ideas, setIdeas] = useState<IdeaEntry[]>([]);
   const [offers, setOffers] = useState<OfferEntry[]>([]);
   const [offerLeads, setOfferLeads] = useState<OfferLeadEntry[]>([]);
   const [complaints, setComplaints] = useState<ComplaintEntry[]>([]);
+  const [launches, setLaunches] = useState<LaunchEntry[]>([]);
+  const [careers, setCareers] = useState<CareerEntry[]>([]);
   
   const [isLoading, setIsLoading] = useState(false);
   const [selectedIdea, setSelectedIdea] = useState<IdeaEntry | null>(null);
@@ -80,6 +100,14 @@ export default function AdminPanel() {
   // New Offer Form State
   const [newOffer, setNewOffer] = useState({ title: '', price: '', features: '', posterUrl: '' });
   const [isCreatingOffer, setIsCreatingOffer] = useState(false);
+
+  // New Launch Form State
+  const [newLaunchName, setNewLaunchName] = useState('');
+  const [isCreatingLaunch, setIsCreatingLaunch] = useState(false);
+
+  // New Career Form State
+  const [newCareer, setNewCareer] = useState({ name: '', age: '', phone: '', email: '', gender: 'Male', experience: '', location: '' });
+  const [isCreatingCareer, setIsCreatingCareer] = useState(false);
 
   // Handlers
   const handleLogin = (e: React.FormEvent) => {
@@ -136,6 +164,22 @@ export default function AdminPanel() {
           fetched.push({ id: doc.id, ...doc.data() } as ComplaintEntry);
         });
         setComplaints(fetched);
+      } else if (activeTab === 'launches') {
+        const q = query(collection(db, 'launches'), orderBy('createdAt', 'desc'));
+        const querySnapshot = await getDocs(q);
+        const fetched: LaunchEntry[] = [];
+        querySnapshot.forEach((doc) => {
+          fetched.push({ id: doc.id, ...doc.data() } as LaunchEntry);
+        });
+        setLaunches(fetched);
+      } else if (activeTab === 'careers') {
+        const q = query(collection(db, 'career_applications'), orderBy('submittedAt', 'desc'));
+        const querySnapshot = await getDocs(q);
+        const fetched: CareerEntry[] = [];
+        querySnapshot.forEach((doc) => {
+          fetched.push({ id: doc.id, ...doc.data() } as CareerEntry);
+        });
+        setCareers(fetched);
       }
     } catch (err) {
       console.error("Error fetching data:", err);
@@ -159,6 +203,10 @@ export default function AdminPanel() {
         setOfferLeads(offerLeads.filter(l => l.id !== id));
       } else if (collectionName === 'complaints') {
         setComplaints(complaints.filter(c => c.id !== id));
+      } else if (collectionName === 'launches') {
+        setLaunches(launches.filter(l => l.id !== id));
+      } else if (collectionName === 'career_applications') {
+        setCareers(careers.filter(c => c.id !== id));
       }
     } catch (err) {
       console.error("Error deleting document:", err);
@@ -195,6 +243,57 @@ export default function AdminPanel() {
       alert("Failed to create offer.");
     } finally {
       setIsCreatingOffer(false);
+    }
+  };
+
+  const handleCreateLaunch = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!newLaunchName.trim()) return;
+    setIsCreatingLaunch(true);
+    try {
+      const docRef = await addDoc(collection(db, 'launches'), {
+        name: newLaunchName.trim(),
+        createdAt: serverTimestamp()
+      });
+      
+      setLaunches([{
+        id: docRef.id,
+        name: newLaunchName.trim(),
+        createdAt: new Date()
+      }, ...launches]);
+      
+      setNewLaunchName('');
+    } catch (err) {
+      console.error("Error creating launch", err);
+      alert("Failed to add launch.");
+    } finally {
+      setIsCreatingLaunch(false);
+    }
+  };
+
+  const handleCreateCareer = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!newCareer.name.trim() || !newCareer.email.trim()) return;
+    setIsCreatingCareer(true);
+    try {
+      const docRef = await addDoc(collection(db, 'career_applications'), {
+        ...newCareer,
+        submittedAt: serverTimestamp()
+      });
+      
+      setCareers([{
+        id: docRef.id,
+        ...newCareer,
+        submittedAt: { toDate: () => new Date() }
+      } as unknown as CareerEntry, ...careers]);
+      
+      setNewCareer({ name: '', age: '', phone: '', email: '', gender: 'Male', experience: '', location: '' });
+      alert("Career record added successfully!");
+    } catch (err) {
+      console.error("Error adding career", err);
+      alert("Failed to add career record.");
+    } finally {
+      setIsCreatingCareer(false);
     }
   };
 
@@ -346,6 +445,22 @@ export default function AdminPanel() {
               >
                 COMPLAINTS
               </button>
+              <button
+                onClick={() => setActiveTab('launches')}
+                className={`px-4 py-2 rounded-lg text-sm font-bold transition-all ${
+                  activeTab === 'launches' ? 'bg-orange-500/20 text-orange-400' : 'text-white/50 hover:text-white hover:bg-white/5'
+                }`}
+              >
+                LAUNCHES
+              </button>
+              <button
+                onClick={() => setActiveTab('careers')}
+                className={`px-4 py-2 rounded-lg text-sm font-bold transition-all ${
+                  activeTab === 'careers' ? 'bg-pink-500/20 text-pink-400' : 'text-white/50 hover:text-white hover:bg-white/5'
+                }`}
+              >
+                CAREERS
+              </button>
             </div>
           </div>
           
@@ -369,6 +484,8 @@ export default function AdminPanel() {
               {activeTab === 'offers' && 'Manage Special Offers'}
               {activeTab === 'offer_leads' && 'Offer Form Leads'}
               {activeTab === 'complaints' && 'Urgent Complaints'}
+              {activeTab === 'launches' && 'Managed Ticker Launches'}
+              {activeTab === 'careers' && 'Career Applications'}
             </h1>
             <p className="text-white/60">
               {activeTab === 'projects' && "Overview of all clients who have submitted a 'Start Project' request."}
@@ -376,6 +493,8 @@ export default function AdminPanel() {
               {activeTab === 'offers' && "Create and manage custom offers to generate unique landing page links."}
               {activeTab === 'offer_leads' && "View all the people who filled out the form on your custom offer links."}
               {activeTab === 'complaints' && "Client complaints and service requests requiring immediate action."}
+              {activeTab === 'launches' && "Manage the company names scrolling on the main page ticker."}
+              {activeTab === 'careers' && "Review candidates who applied to join the Flyggo team."}
             </p>
           </div>
           <button 
@@ -417,8 +536,91 @@ export default function AdminPanel() {
           </div>
         )}
 
+        {/* Create Launch Form */}
+        {activeTab === 'launches' && (
+          <div className="bg-white/5 border border-white/10 rounded-2xl p-6 md:p-8 mb-8 backdrop-blur-md">
+            <h2 className="text-xl font-bold mb-6 flex items-center gap-2">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="text-orange-400"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+              Add New Launch
+            </h2>
+            <form onSubmit={handleCreateLaunch} className="flex flex-col md:flex-row gap-4 items-end">
+              <div className="flex-1 w-full">
+                <label className="block text-xs font-semibold text-white/70 uppercase tracking-wider mb-2">Company Name</label>
+                <input
+                  type="text"
+                  required
+                  value={newLaunchName}
+                  onChange={e => setNewLaunchName(e.target.value)}
+                  className="w-full bg-black/40 border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-orange-500/50 transition-colors"
+                  placeholder="e.g. THEBARBACK"
+                />
+              </div>
+              <button
+                type="submit"
+                disabled={isCreatingLaunch}
+                className="bg-orange-500 hover:bg-orange-600 text-white font-bold py-3 px-8 rounded-xl transition-colors disabled:opacity-50 whitespace-nowrap w-full md:w-auto"
+              >
+                {isCreatingLaunch ? 'Adding...' : 'Add Launch'}
+              </button>
+            </form>
+          </div>
+        )}
+
+        {/* Create Career Form */}
+        {activeTab === 'careers' && (
+          <div className="bg-white/5 border border-white/10 rounded-2xl p-6 md:p-8 mb-8 backdrop-blur-md">
+            <h2 className="text-xl font-bold mb-6 flex items-center gap-2">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="text-pink-400"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="8.5" cy="7" r="4"></circle><line x1="20" y1="8" x2="20" y2="14"></line><line x1="23" y1="11" x2="17" y2="11"></line></svg>
+              Add New Career Record
+            </h2>
+            <form onSubmit={handleCreateCareer} className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              <div>
+                <label className="block text-xs font-semibold text-white/70 uppercase tracking-wider mb-2">Name</label>
+                <input type="text" required value={newCareer.name} onChange={e => setNewCareer({...newCareer, name: e.target.value})} className="w-full bg-black/40 border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-pink-500/50" />
+              </div>
+              <div>
+                <label className="block text-xs font-semibold text-white/70 uppercase tracking-wider mb-2">Email</label>
+                <input type="email" required value={newCareer.email} onChange={e => setNewCareer({...newCareer, email: e.target.value})} className="w-full bg-black/40 border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-pink-500/50" />
+              </div>
+              <div>
+                <label className="block text-xs font-semibold text-white/70 uppercase tracking-wider mb-2">Phone No</label>
+                <input type="text" required value={newCareer.phone} onChange={e => setNewCareer({...newCareer, phone: e.target.value})} className="w-full bg-black/40 border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-pink-500/50" />
+              </div>
+              <div>
+                <label className="block text-xs font-semibold text-white/70 uppercase tracking-wider mb-2">Age</label>
+                <input type="number" required value={newCareer.age} onChange={e => setNewCareer({...newCareer, age: e.target.value})} className="w-full bg-black/40 border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-pink-500/50" />
+              </div>
+              <div>
+                <label className="block text-xs font-semibold text-white/70 uppercase tracking-wider mb-2">Gender</label>
+                <select value={newCareer.gender} onChange={e => setNewCareer({...newCareer, gender: e.target.value})} className="w-full bg-black/40 border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-pink-500/50 appearance-none">
+                  <option value="Male">Male</option>
+                  <option value="Female">Female</option>
+                  <option value="Other">Other</option>
+                </select>
+              </div>
+              <div>
+                <label className="block text-xs font-semibold text-white/70 uppercase tracking-wider mb-2">Current Location</label>
+                <input type="text" required value={newCareer.location} onChange={e => setNewCareer({...newCareer, location: e.target.value})} className="w-full bg-black/40 border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-pink-500/50" />
+              </div>
+              <div className="md:col-span-2 lg:col-span-3">
+                <label className="block text-xs font-semibold text-white/70 uppercase tracking-wider mb-2">Previous Experience</label>
+                <textarea required value={newCareer.experience} onChange={e => setNewCareer({...newCareer, experience: e.target.value})} className="w-full bg-black/40 border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-pink-500/50 h-24 resize-none"></textarea>
+              </div>
+              <div className="md:col-span-2 lg:col-span-3 flex justify-end">
+                <button
+                  type="submit"
+                  disabled={isCreatingCareer}
+                  className="bg-pink-500 hover:bg-pink-600 text-white font-bold py-3 px-8 rounded-xl transition-colors disabled:opacity-50"
+                >
+                  {isCreatingCareer ? 'Saving...' : 'Save Career Record'}
+                </button>
+              </div>
+            </form>
+          </div>
+        )}
+
         {/* Data Table */}
-        <div className="bg-white/5 border border-white/10 rounded-xl overflow-hidden backdrop-blur-sm">
+        <div className="bg-white/5 border border-white/10 rounded-2xl backdrop-blur-md overflow-hidden">
           <div className="overflow-x-auto">
             <table className="w-full text-left text-sm min-w-max">
               
@@ -472,6 +674,22 @@ export default function AdminPanel() {
                       <th className="px-6 py-4 font-medium">Actions</th>
                     </>
                   )}
+                  {activeTab === 'launches' && (
+                    <>
+                      <th className="px-6 py-4 font-medium">Company Name</th>
+                      <th className="px-6 py-4 font-medium w-32">Actions</th>
+                    </>
+                  )}
+                  {activeTab === 'careers' && (
+                    <>
+                      <th className="px-6 py-4 font-medium">Candidate</th>
+                      <th className="px-6 py-4 font-medium">Contact</th>
+                      <th className="px-6 py-4 font-medium">Details</th>
+                      <th className="px-6 py-4 font-medium">Experience</th>
+                      <th className="px-6 py-4 font-medium">Applied</th>
+                      <th className="px-6 py-4 font-medium w-32">Actions</th>
+                    </>
+                  )}
                 </tr>
               </thead>
               
@@ -488,7 +706,9 @@ export default function AdminPanel() {
                   activeTab === 'ideas' && ideas.length === 0 ||
                   activeTab === 'offers' && offers.length === 0 ||
                   activeTab === 'offer_leads' && offerLeads.length === 0 ||
-                  activeTab === 'complaints' && complaints.length === 0
+                  activeTab === 'complaints' && complaints.length === 0 ||
+                  activeTab === 'launches' && launches.length === 0 ||
+                  activeTab === 'careers' && careers.length === 0
                 ) ? (
                   <tr>
                     <td colSpan={7} className="px-6 py-12 text-center text-white/40">
@@ -687,6 +907,61 @@ export default function AdminPanel() {
                               Delete
                             </button>
                           </div>
+                        </td>
+                      </tr>
+                    ))}
+                  </>
+                )}
+                
+                {activeTab === 'launches' && (
+                  <>
+                    {launches.map((launch) => (
+                      <tr key={launch.id} className="hover:bg-white/5 transition-colors">
+                        <td className="px-6 py-4">
+                          <div className="text-white font-medium">{launch.name}</div>
+                        </td>
+                        <td className="px-6 py-4">
+                          <button 
+                            onClick={() => handleDelete('launches', launch.id)}
+                            className="text-red-400 hover:text-red-300 text-sm font-medium transition-colors"
+                          >
+                            Delete
+                          </button>
+                        </td>
+                      </tr>
+                    ))}
+                  </>
+                )}
+                
+                {activeTab === 'careers' && (
+                  <>
+                    {careers.map((career) => (
+                      <tr key={career.id} className="hover:bg-white/5 transition-colors">
+                        <td className="px-6 py-4">
+                          <div className="text-white font-medium">{career.name}</div>
+                          <div className="text-xs text-white/50">{career.gender}</div>
+                        </td>
+                        <td className="px-6 py-4 text-sm text-white/70">
+                          <div><a href={`mailto:${career.email}`} className="text-pink-300 hover:underline">{career.email}</a></div>
+                          <div>{career.phone}</div>
+                        </td>
+                        <td className="px-6 py-4 text-sm text-white/70">
+                          <div><span className="text-white/40">Age:</span> {career.age}</div>
+                          <div><span className="text-white/40">Location:</span> {career.location}</div>
+                        </td>
+                        <td className="px-6 py-4 text-sm text-white/70 max-w-[200px] truncate" title={career.experience}>
+                          {career.experience}
+                        </td>
+                        <td className="px-6 py-4 text-sm text-white/50">
+                          {career.submittedAt?.toDate().toLocaleDateString()}
+                        </td>
+                        <td className="px-6 py-4">
+                          <button 
+                            onClick={() => handleDelete('career_applications', career.id)}
+                            className="bg-red-500/10 text-red-400 hover:bg-red-500/20 border border-red-500/20 px-3 py-1 rounded text-xs font-semibold transition-colors"
+                          >
+                            Delete
+                          </button>
                         </td>
                       </tr>
                     ))}

@@ -76,7 +76,7 @@ export default function FounderPage() {
               <div className="absolute inset-0 bg-gradient-to-t from-black via-black/20 to-transparent opacity-90 z-10" />
               <Image 
                 src="/images/founder.jpeg" 
-                alt="S. Nikesh - Founder & CEO, Flyggo" 
+                alt="Nikesh S - Founder & CEO, Flyggo" 
                 fill 
                 className="object-cover group-hover:scale-105 transition-transform duration-1000 ease-out" 
                 priority
@@ -87,7 +87,7 @@ export default function FounderPage() {
                     initial={{ y: 50 }} animate={{ y: 0 }} transition={{ delay: 0.5, duration: 0.8 }}
                     className="text-5xl lg:text-6xl font-['Instrument_Serif'] text-white mb-2 tracking-tight"
                   >
-                    S. Nikesh
+                    Nikesh S
                   </motion.h1>
                 </div>
                 <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 1 }}>
@@ -141,7 +141,7 @@ export default function FounderPage() {
               <h3 className="text-3xl md:text-5xl font-['Instrument_Serif'] leading-[1.2] mb-10 text-white">
                 "Great businesses are built on innovation, trust, and the courage to create something meaningful."
               </h3>
-              <p className="text-white/40 font-medium tracking-[0.2em] uppercase text-xs">S. Nikesh</p>
+              <p className="text-white/40 font-medium tracking-[0.2em] uppercase text-xs">Nikesh S</p>
             </div>
             
             {/* Ambient glows behind text */}
