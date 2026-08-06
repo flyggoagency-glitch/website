@@ -1,16 +1,18 @@
 "use client";
 
 import React, { useState } from 'react';
-import Link from 'next/link';
 import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
 import { db } from '@/lib/firebase';
 import { motion, AnimatePresence } from 'framer-motion';
 import { FadeIn } from '@/components/animations/FadeIn';
 import { ClassicFooter } from '@/components/ClassicFooter';
+import { ClassicNavbar } from '@/components/ClassicNavbar';
 
 export default function ComplaintPage() {
   const [formData, setFormData] = useState({
     name: '',
+    phone: '',
+    email: '',
     customerType: '',
     problem: ''
   });
@@ -48,21 +50,7 @@ export default function ComplaintPage() {
       </div>
 
       {/* Navbar Wrapper */}
-      <div className="relative z-10 px-6 md:px-12 lg:px-16 pt-6 max-w-[1920px] mx-auto w-full">
-        <nav className="bg-white/5 backdrop-blur-md border border-white/10 rounded-xl px-6 py-4 flex items-center justify-between">
-          <Link href="/flyggo-classic" className="text-2xl font-semibold tracking-tight text-white flex items-center gap-1 hover:opacity-80 transition-opacity">
-            Flyggo<sup className="text-xs font-normal">®</sup>
-          </Link>
-          
-          <div className="hidden md:flex items-center gap-8 text-sm">
-            <Link href="/flyggo-classic" className="text-gray-300 hover:text-gray-100 transition-colors">Home</Link>
-            <Link href="/about-classic" className="text-gray-300 hover:text-gray-100 transition-colors">About Classic</Link>
-            <Link href="/investing" className="text-gray-300 hover:text-gray-100 transition-colors">Investing</Link>
-            <Link href="/offers" className="text-gray-300 hover:text-gray-100 transition-colors">Offers</Link>
-            <Link href="/complaint" className="text-white font-medium">Complaint/Service</Link>
-          </div>
-        </nav>
-      </div>
+      <ClassicNavbar />
 
       {/* Main Content */}
       <main className="relative z-10 flex-1 flex flex-col justify-center px-6 md:px-16 lg:px-24 py-20 w-full max-w-[1920px] mx-auto">
@@ -138,6 +126,30 @@ export default function ComplaintPage() {
                             value={formData.name} 
                             onChange={e => setFormData({...formData, name: e.target.value})} 
                             placeholder="John Doe" 
+                            className="w-full bg-black/40 border border-white/10 rounded-xl px-5 py-4 text-white placeholder:text-white/30 focus:outline-none focus:border-red-500 focus:bg-black/60 transition-all" 
+                          />
+                        </div>
+
+                        <div>
+                          <label className="block text-xs font-semibold text-white/70 uppercase tracking-wider mb-2">Phone Number</label>
+                          <input 
+                            type="tel" 
+                            required 
+                            value={formData.phone} 
+                            onChange={e => setFormData({...formData, phone: e.target.value})} 
+                            placeholder="+1 (555) 000-0000" 
+                            className="w-full bg-black/40 border border-white/10 rounded-xl px-5 py-4 text-white placeholder:text-white/30 focus:outline-none focus:border-red-500 focus:bg-black/60 transition-all" 
+                          />
+                        </div>
+
+                        <div>
+                          <label className="block text-xs font-semibold text-white/70 uppercase tracking-wider mb-2">Email Address</label>
+                          <input 
+                            type="email" 
+                            required 
+                            value={formData.email} 
+                            onChange={e => setFormData({...formData, email: e.target.value})} 
+                            placeholder="john@example.com" 
                             className="w-full bg-black/40 border border-white/10 rounded-xl px-5 py-4 text-white placeholder:text-white/30 focus:outline-none focus:border-red-500 focus:bg-black/60 transition-all" 
                           />
                         </div>

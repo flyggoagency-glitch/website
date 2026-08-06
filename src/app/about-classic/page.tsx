@@ -3,6 +3,7 @@
 import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { ClassicFooter } from '@/components/ClassicFooter';
+import { ClassicNavbar } from '@/components/ClassicNavbar';
 
 // FadeIn Component
 const FadeIn = ({ children, delay = 0, duration = 1000, className = "" }: { children: React.ReactNode, delay?: number, duration?: number, className?: string }) => {
@@ -46,21 +47,7 @@ export default function AboutClassicPage() {
       <div className="fixed inset-0 bg-gradient-to-b from-transparent to-[#060218] z-0" />
 
       {/* Navbar Wrapper */}
-      <div className="relative z-10 px-6 md:px-12 lg:px-16 pt-6 max-w-[1920px] mx-auto w-full">
-        <nav className="liquid-glass rounded-xl px-4 py-2 flex items-center justify-between">
-          <Link href="/flyggo-classic" className="text-2xl font-semibold tracking-tight text-white flex items-center gap-1 hover:opacity-80 transition-opacity">
-            Flyggo<sup className="text-xs font-normal">®</sup>
-          </Link>
-          
-          <div className="hidden md:flex items-center gap-8 text-sm">
-            <Link href="/flyggo-classic" className="text-gray-300 hover:text-gray-100 transition-colors">Home</Link>
-            <Link href="/about-classic" className="text-white font-medium">About Classic</Link>
-            <Link href="/investing" className="text-gray-300 hover:text-gray-100 transition-colors">Investing</Link>
-            <Link href="/offers" className="text-gray-300 hover:text-gray-100 transition-colors">Offers</Link>
-            <Link href="/complaint" className="text-gray-300 hover:text-gray-100 transition-colors">Complaint/Service</Link>
-          </div>
-        </nav>
-      </div>
+      <ClassicNavbar />
 
       {/* Main Content */}
       <main className="relative z-10 flex-1 flex flex-col justify-center px-6 md:px-16 lg:px-24 py-20 w-full max-w-[1920px] mx-auto">

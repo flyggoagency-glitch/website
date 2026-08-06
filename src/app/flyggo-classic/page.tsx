@@ -3,6 +3,7 @@
 import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { ClassicFooter } from '@/components/ClassicFooter';
+import { ClassicNavbar } from '@/components/ClassicNavbar';
 
 // FadeIn Component
 const FadeIn = ({ children, delay = 0, duration = 1000, className = "" }: { children: React.ReactNode, delay?: number, duration?: number, className?: string }) => {
@@ -44,9 +45,9 @@ const AnimatedHeading = ({ text, initialDelay = 200 }: { text: string, initialDe
   let globalCharIndex = 0;
 
   return (
-    <h1 className="text-5xl md:text-6xl lg:text-[90px] xl:text-[110px] mb-8 text-white leading-[1.1] lg:leading-[1.1]" style={{ fontFamily: '"Instrument Serif", serif', textShadow: '0 8px 24px rgba(0,0,0,0.6)' }}>
+    <h1 className="text-4xl md:text-6xl lg:text-[90px] xl:text-[110px] mb-6 md:mb-8 text-white leading-tight lg:leading-tight" style={{ fontFamily: '"Instrument Serif", serif', textShadow: '0 8px 24px rgba(0,0,0,0.6)' }}>
       {lines.map((line, lineIndex) => (
-        <div key={lineIndex} className="overflow-hidden whitespace-nowrap py-2">
+        <div key={lineIndex} className="overflow-hidden whitespace-nowrap pb-1 md:pb-2">
           {line.split('').map((char, charIndex) => {
             const currentDelay = initialDelay + (globalCharIndex * charDelay);
             globalCharIndex++;
@@ -72,6 +73,7 @@ const AnimatedHeading = ({ text, initialDelay = 200 }: { text: string, initialDe
 };
 
 export default function FlyggoClassicPage() {
+
   return (
     <div className="bg-black font-['Inter'] relative flex flex-col text-white">
       {/* Video Background */}
@@ -87,25 +89,10 @@ export default function FlyggoClassicPage() {
 
       {/* 100vh Hero Container */}
       <div className="min-h-screen flex flex-col w-full">
-        {/* Navbar Wrapper */}
-        <div className="relative z-10 px-6 md:px-12 lg:px-16 pt-6 max-w-[1920px] mx-auto w-full">
-        <nav className="liquid-glass rounded-xl px-4 py-2 flex items-center justify-between">
-          <Link href="/" className="text-2xl font-semibold tracking-tight text-white flex items-center gap-1">
-            Flyggo<sup className="text-xs font-normal">®</sup>
-          </Link>
-          
-          <div className="hidden md:flex items-center gap-8 text-sm">
-            <Link href="/flyggo-classic" className="text-white font-medium">Home</Link>
-            <Link href="/about-classic" className="text-gray-300 hover:text-gray-100 transition-colors">About Classic</Link>
-            <Link href="/investing" className="text-gray-300 hover:text-gray-100 transition-colors">Investing</Link>
-            <Link href="/offers" className="text-gray-300 hover:text-gray-100 transition-colors">Offers</Link>
-            <Link href="/complaint" className="text-gray-300 hover:text-gray-100 transition-colors">Complaint/Service</Link>
-          </div>
-        </nav>
-      </div>
+        <ClassicNavbar />
 
       {/* Hero Content */}
-      <main className="relative z-10 px-6 md:px-12 lg:px-24 flex-1 flex flex-col justify-end pb-16 lg:pb-24 w-full max-w-[1920px] mx-auto">
+      <main className="relative z-10 px-6 md:px-12 lg:px-24 flex-1 flex flex-col justify-center lg:justify-end pb-24 lg:pb-32 w-full max-w-[1920px] mx-auto">
         <div className="lg:grid lg:grid-cols-2 lg:items-end gap-12">
           
           {/* Left Column */}
@@ -116,24 +103,13 @@ export default function FlyggoClassicPage() {
               <p>Joining forces with small business owners to elevate your ventures to the <span className="font-medium text-[#FBE5B4]">premium tier</span>.</p>
             </FadeIn>
             
-            <FadeIn delay={1200} duration={1000} className="flex flex-wrap gap-5 mt-2">
-              <Link href="/start-project" className="bg-gradient-to-r from-[#FBE5B4] to-[#D4AF37] text-black px-8 py-3.5 rounded-lg font-semibold hover:opacity-90 transition-opacity shadow-[0_0_20px_rgba(212,175,55,0.3)]">
+            <FadeIn delay={1200} duration={1000} className="flex flex-col sm:flex-row flex-wrap gap-4 sm:gap-5 mt-2">
+              <Link href="/start-project" className="bg-gradient-to-r from-[#FBE5B4] to-[#D4AF37] text-black px-8 py-3.5 rounded-lg font-semibold hover:opacity-90 transition-opacity shadow-[0_0_20px_rgba(212,175,55,0.3)] text-center w-full sm:w-auto">
                 Apply
               </Link>
-              <Link href="#" className="liquid-glass border border-white/20 text-white px-8 py-3.5 rounded-lg font-medium hover:bg-white/10 transition-all backdrop-blur-md">
+              <Link href="#" className="liquid-glass border border-white/20 text-white px-8 py-3.5 rounded-lg font-medium hover:bg-white/10 transition-all backdrop-blur-md text-center w-full sm:w-auto">
                 Learn More
               </Link>
-            </FadeIn>
-          </div>
-
-          {/* Right Column */}
-          <div className="flex items-end justify-start lg:justify-end mt-12 lg:mt-0">
-            <FadeIn delay={1400} duration={1000}>
-              <div className="liquid-glass border border-white/20 px-6 py-3 rounded-xl">
-                <span className="text-lg md:text-xl lg:text-2xl font-light text-white">
-                  Investing. Building. Advisory.
-                </span>
-              </div>
             </FadeIn>
           </div>
 

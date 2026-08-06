@@ -52,6 +52,8 @@ type OfferLeadEntry = {
 type ComplaintEntry = {
   id: string;
   name: string;
+  phone?: string;
+  email?: string;
   customerType: string;
   problem: string;
   submittedAt: any;
@@ -66,10 +68,21 @@ type LaunchEntry = {
 
 type CareerEntry = {
   id: string;
+  position: string;
+  experience: string;
+  mode: string;
+  salary: string;
+  submittedAt: any;
+};
+
+type CandidateApplicationEntry = {
+  id: string;
+  jobId: string;
+  jobPosition: string;
   name: string;
-  age: string;
-  phone: string;
   email: string;
+  phone: string;
+  age: string;
   gender: string;
   experience: string;
   location: string;
@@ -84,7 +97,7 @@ export default function AdminPanel() {
   const [error, setError] = useState('');
 
   // Dashboard States
-  const [activeTab, setActiveTab] = useState<'projects' | 'ideas' | 'offers' | 'offer_leads' | 'complaints' | 'launches' | 'careers'>('projects');
+  const [activeTab, setActiveTab] = useState<'projects' | 'ideas' | 'offers' | 'offer_leads' | 'complaints' | 'launches' | 'careers' | 'applications'>('projects');
   
   const [projects, setProjects] = useState<ProjectEntry[]>([]);
   const [ideas, setIdeas] = useState<IdeaEntry[]>([]);
@@ -93,6 +106,7 @@ export default function AdminPanel() {
   const [complaints, setComplaints] = useState<ComplaintEntry[]>([]);
   const [launches, setLaunches] = useState<LaunchEntry[]>([]);
   const [careers, setCareers] = useState<CareerEntry[]>([]);
+  const [candidateApplications, setCandidateApplications] = useState<CandidateApplicationEntry[]>([]);
   
   const [isLoading, setIsLoading] = useState(false);
   const [selectedIdea, setSelectedIdea] = useState<IdeaEntry | null>(null);
@@ -106,7 +120,7 @@ export default function AdminPanel() {
   const [isCreatingLaunch, setIsCreatingLaunch] = useState(false);
 
   // New Career Form State
-  const [newCareer, setNewCareer] = useState({ name: '', age: '', phone: '', email: '', gender: 'Male', experience: '', location: '' });
+  const [newCareer, setNewCareer] = useState({ position: '', experience: '', mode: 'Hybrid', salary: '' });
   const [isCreatingCareer, setIsCreatingCareer] = useState(false);
 
   // Handlers
@@ -180,6 +194,14 @@ export default function AdminPanel() {
           fetched.push({ id: doc.id, ...doc.data() } as CareerEntry);
         });
         setCareers(fetched);
+      } else if (activeTab === 'applications') {
+        const q = query(collection(db, 'candidate_applications'), orderBy('submittedAt', 'desc'));
+        const querySnapshot = await getDocs(q);
+        const fetched: CandidateApplicationEntry[] = [];
+        querySnapshot.forEach((doc) => {
+          fetched.push({ id: doc.id, ...doc.data() } as CandidateApplicationEntry);
+        });
+        setCandidateApplications(fetched);
       }
     } catch (err) {
       console.error("Error fetching data:", err);
@@ -207,6 +229,8 @@ export default function AdminPanel() {
         setLaunches(launches.filter(l => l.id !== id));
       } else if (collectionName === 'career_applications') {
         setCareers(careers.filter(c => c.id !== id));
+      } else if (collectionName === 'candidate_applications') {
+        setCandidateApplications(candidateApplications.filter(a => a.id !== id));
       }
     } catch (err) {
       console.error("Error deleting document:", err);
@@ -273,7 +297,7 @@ export default function AdminPanel() {
 
   const handleCreateCareer = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!newCareer.name.trim() || !newCareer.email.trim()) return;
+    if (!newCareer.position.trim() || !newCareer.salary.trim()) return;
     setIsCreatingCareer(true);
     try {
       const docRef = await addDoc(collection(db, 'career_applications'), {
@@ -287,7 +311,7 @@ export default function AdminPanel() {
         submittedAt: { toDate: () => new Date() }
       } as unknown as CareerEntry, ...careers]);
       
-      setNewCareer({ name: '', age: '', phone: '', email: '', gender: 'Male', experience: '', location: '' });
+      setNewCareer({ position: '', experience: '', mode: 'Hybrid', salary: '' });
       alert("Career record added successfully!");
     } catch (err) {
       console.error("Error adding career", err);
@@ -459,7 +483,15 @@ export default function AdminPanel() {
                   activeTab === 'careers' ? 'bg-pink-500/20 text-pink-400' : 'text-white/50 hover:text-white hover:bg-white/5'
                 }`}
               >
-                CAREERS
+                JOB POSTINGS
+              </button>
+              <button
+                onClick={() => setActiveTab('applications')}
+                className={`px-4 py-2 rounded-lg text-sm font-bold transition-all ${
+                  activeTab === 'applications' ? 'bg-[#A068FF]/20 text-[#A068FF]' : 'text-white/50 hover:text-white hover:bg-white/5'
+                }`}
+              >
+                APPLICATIONS
               </button>
             </div>
           </div>
@@ -494,7 +526,8 @@ export default function AdminPanel() {
               {activeTab === 'offer_leads' && "View all the people who filled out the form on your custom offer links."}
               {activeTab === 'complaints' && "Client complaints and service requests requiring immediate action."}
               {activeTab === 'launches' && "Manage the company names scrolling on the main page ticker."}
-              {activeTab === 'careers' && "Review candidates who applied to join the Flyggo team."}
+              {activeTab === 'careers' && "Create and manage job openings on your careers page."}
+              {activeTab === 'applications' && "Review candidates who applied to join the Flyggo team."}
             </p>
           </div>
           <button 
@@ -573,46 +606,34 @@ export default function AdminPanel() {
               <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="text-pink-400"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="8.5" cy="7" r="4"></circle><line x1="20" y1="8" x2="20" y2="14"></line><line x1="23" y1="11" x2="17" y2="11"></line></svg>
               Add New Career Record
             </h2>
-            <form onSubmit={handleCreateCareer} className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <form onSubmit={handleCreateCareer} className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-6">
               <div>
-                <label className="block text-xs font-semibold text-white/70 uppercase tracking-wider mb-2">Name</label>
-                <input type="text" required value={newCareer.name} onChange={e => setNewCareer({...newCareer, name: e.target.value})} className="w-full bg-black/40 border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-pink-500/50" />
+                <label className="block text-xs font-semibold text-white/70 uppercase tracking-wider mb-2">Position</label>
+                <input type="text" required value={newCareer.position} onChange={e => setNewCareer({...newCareer, position: e.target.value})} placeholder="e.g. Telecaller" className="w-full bg-black/40 border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-pink-500/50" />
               </div>
               <div>
-                <label className="block text-xs font-semibold text-white/70 uppercase tracking-wider mb-2">Email</label>
-                <input type="email" required value={newCareer.email} onChange={e => setNewCareer({...newCareer, email: e.target.value})} className="w-full bg-black/40 border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-pink-500/50" />
+                <label className="block text-xs font-semibold text-white/70 uppercase tracking-wider mb-2">Experience Required</label>
+                <input type="text" required value={newCareer.experience} onChange={e => setNewCareer({...newCareer, experience: e.target.value})} placeholder="e.g. 2+ Years" className="w-full bg-black/40 border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-pink-500/50" />
               </div>
               <div>
-                <label className="block text-xs font-semibold text-white/70 uppercase tracking-wider mb-2">Phone No</label>
-                <input type="text" required value={newCareer.phone} onChange={e => setNewCareer({...newCareer, phone: e.target.value})} className="w-full bg-black/40 border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-pink-500/50" />
-              </div>
-              <div>
-                <label className="block text-xs font-semibold text-white/70 uppercase tracking-wider mb-2">Age</label>
-                <input type="number" required value={newCareer.age} onChange={e => setNewCareer({...newCareer, age: e.target.value})} className="w-full bg-black/40 border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-pink-500/50" />
-              </div>
-              <div>
-                <label className="block text-xs font-semibold text-white/70 uppercase tracking-wider mb-2">Gender</label>
-                <select value={newCareer.gender} onChange={e => setNewCareer({...newCareer, gender: e.target.value})} className="w-full bg-black/40 border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-pink-500/50 appearance-none">
-                  <option value="Male">Male</option>
-                  <option value="Female">Female</option>
-                  <option value="Other">Other</option>
+                <label className="block text-xs font-semibold text-white/70 uppercase tracking-wider mb-2">Mode</label>
+                <select required value={newCareer.mode} onChange={e => setNewCareer({...newCareer, mode: e.target.value})} className="w-full bg-black/40 border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-pink-500/50 appearance-none">
+                  <option value="Hybrid">Hybrid</option>
+                  <option value="Offline">Offline</option>
+                  <option value="Online">Online</option>
                 </select>
               </div>
               <div>
-                <label className="block text-xs font-semibold text-white/70 uppercase tracking-wider mb-2">Current Location</label>
-                <input type="text" required value={newCareer.location} onChange={e => setNewCareer({...newCareer, location: e.target.value})} className="w-full bg-black/40 border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-pink-500/50" />
+                <label className="block text-xs font-semibold text-white/70 uppercase tracking-wider mb-2">Expected Salary</label>
+                <input type="text" required value={newCareer.salary} onChange={e => setNewCareer({...newCareer, salary: e.target.value})} placeholder="e.g. $50,000 / ₹40,000" className="w-full bg-black/40 border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-pink-500/50" />
               </div>
-              <div className="md:col-span-2 lg:col-span-3">
-                <label className="block text-xs font-semibold text-white/70 uppercase tracking-wider mb-2">Previous Experience</label>
-                <textarea required value={newCareer.experience} onChange={e => setNewCareer({...newCareer, experience: e.target.value})} className="w-full bg-black/40 border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-pink-500/50 h-24 resize-none"></textarea>
-              </div>
-              <div className="md:col-span-2 lg:col-span-3 flex justify-end">
+              <div className="md:col-span-2 lg:col-span-2 flex justify-end mt-2">
                 <button
                   type="submit"
                   disabled={isCreatingCareer}
                   className="bg-pink-500 hover:bg-pink-600 text-white font-bold py-3 px-8 rounded-xl transition-colors disabled:opacity-50"
                 >
-                  {isCreatingCareer ? 'Saving...' : 'Save Career Record'}
+                  {isCreatingCareer ? 'Saving...' : 'Post Job Record'}
                 </button>
               </div>
             </form>
@@ -668,6 +689,7 @@ export default function AdminPanel() {
                   {activeTab === 'complaints' && (
                     <>
                       <th className="px-6 py-4 font-medium">Name</th>
+                      <th className="px-6 py-4 font-medium">Contact</th>
                       <th className="px-6 py-4 font-medium">Customer Type</th>
                       <th className="px-6 py-4 font-medium">Problem</th>
                       <th className="px-6 py-4 font-medium">Status</th>
@@ -682,11 +704,21 @@ export default function AdminPanel() {
                   )}
                   {activeTab === 'careers' && (
                     <>
+                      <th className="px-6 py-4 font-medium">Position</th>
+                      <th className="px-6 py-4 font-medium">Experience</th>
+                      <th className="px-6 py-4 font-medium">Mode</th>
+                      <th className="px-6 py-4 font-medium">Expected Salary</th>
+                      <th className="px-6 py-4 font-medium">Posted</th>
+                      <th className="px-6 py-4 font-medium w-32">Actions</th>
+                    </>
+                  )}
+                  {activeTab === 'applications' && (
+                    <>
                       <th className="px-6 py-4 font-medium">Candidate</th>
                       <th className="px-6 py-4 font-medium">Contact</th>
                       <th className="px-6 py-4 font-medium">Details</th>
                       <th className="px-6 py-4 font-medium">Experience</th>
-                      <th className="px-6 py-4 font-medium">Applied</th>
+                      <th className="px-6 py-4 font-medium">Applied Date</th>
                       <th className="px-6 py-4 font-medium w-32">Actions</th>
                     </>
                   )}
@@ -708,7 +740,8 @@ export default function AdminPanel() {
                   activeTab === 'offer_leads' && offerLeads.length === 0 ||
                   activeTab === 'complaints' && complaints.length === 0 ||
                   activeTab === 'launches' && launches.length === 0 ||
-                  activeTab === 'careers' && careers.length === 0
+                  activeTab === 'careers' && careers.length === 0 ||
+                  activeTab === 'applications' && candidateApplications.length === 0
                 ) ? (
                   <tr>
                     <td colSpan={7} className="px-6 py-12 text-center text-white/40">
@@ -876,6 +909,12 @@ export default function AdminPanel() {
                       <tr key={complaint.id} className="hover:bg-white/5 transition-colors">
                         <td className="px-6 py-4 font-bold text-white">{complaint.name}</td>
                         <td className="px-6 py-4">
+                          <div className="flex flex-col gap-1 text-sm">
+                            <a href={`mailto:${complaint.email}`} className="text-cyan-400 hover:underline">{complaint.email || 'N/A'}</a>
+                            <span className="text-white/60">{complaint.phone || 'N/A'}</span>
+                          </div>
+                        </td>
+                        <td className="px-6 py-4">
                           <span className={`px-2 py-1 rounded text-xs font-bold ${complaint.customerType === 'New Customer' ? 'bg-orange-500/20 text-orange-400' : 'bg-blue-500/20 text-blue-400'}`}>
                             {complaint.customerType}
                           </span>
@@ -933,24 +972,59 @@ export default function AdminPanel() {
                   </>
                 )}
                 
+                {activeTab === 'applications' && (
+                  <>
+                    {candidateApplications.map((app) => (
+                      <tr key={app.id} className="hover:bg-white/5 transition-colors">
+                        <td className="px-6 py-4">
+                          <div className="text-white font-bold">{app.name}</div>
+                          <div className="text-xs text-[#A068FF] mt-1 font-semibold uppercase tracking-wider">{app.jobPosition}</div>
+                        </td>
+                        <td className="px-6 py-4 text-sm text-white/70">
+                          <div><a href={`mailto:${app.email}`} className="text-cyan-400 hover:underline">{app.email}</a></div>
+                          <div>{app.phone}</div>
+                        </td>
+                        <td className="px-6 py-4 text-sm text-white/70">
+                          <div><span className="text-white/40">Age:</span> {app.age}</div>
+                          <div><span className="text-white/40">Gender:</span> {app.gender}</div>
+                          <div><span className="text-white/40">Loc:</span> {app.location}</div>
+                        </td>
+                        <td className="px-6 py-4 text-sm text-white/70 max-w-[250px]">
+                          <div className="line-clamp-3" title={app.experience}>{app.experience}</div>
+                        </td>
+                        <td className="px-6 py-4 text-sm text-white/50">
+                          {app.submittedAt?.toDate().toLocaleDateString()}
+                        </td>
+                        <td className="px-6 py-4">
+                          <button 
+                            onClick={() => handleDelete('candidate_applications', app.id)}
+                            className="bg-red-500/10 text-red-400 hover:bg-red-500/20 border border-red-500/20 px-3 py-1 rounded text-xs font-semibold transition-colors"
+                          >
+                            Delete
+                          </button>
+                        </td>
+                      </tr>
+                    ))}
+                  </>
+                )}
+                
                 {activeTab === 'careers' && (
                   <>
                     {careers.map((career) => (
                       <tr key={career.id} className="hover:bg-white/5 transition-colors">
-                        <td className="px-6 py-4">
-                          <div className="text-white font-medium">{career.name}</div>
-                          <div className="text-xs text-white/50">{career.gender}</div>
+                        <td className="px-6 py-4 font-bold text-white">
+                          {career.position}
                         </td>
                         <td className="px-6 py-4 text-sm text-white/70">
-                          <div><a href={`mailto:${career.email}`} className="text-pink-300 hover:underline">{career.email}</a></div>
-                          <div>{career.phone}</div>
-                        </td>
-                        <td className="px-6 py-4 text-sm text-white/70">
-                          <div><span className="text-white/40">Age:</span> {career.age}</div>
-                          <div><span className="text-white/40">Location:</span> {career.location}</div>
-                        </td>
-                        <td className="px-6 py-4 text-sm text-white/70 max-w-[200px] truncate" title={career.experience}>
                           {career.experience}
+                        </td>
+                        <td className="px-6 py-4 text-sm">
+                          <span className="bg-pink-500/20 text-pink-400 text-xs font-bold px-2 py-1 rounded uppercase tracking-wider">
+                            {career.mode}
+                          </span>
+                        </td>
+                        <td className="px-6 py-4 text-sm text-green-400 font-medium">
+                          {career.salary}
                         </td>
                         <td className="px-6 py-4 text-sm text-white/50">
                           {career.submittedAt?.toDate().toLocaleDateString()}

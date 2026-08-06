@@ -28,7 +28,7 @@ export default function AboutPage() {
         </Link>
       </header>
 
-      <main className="relative z-10 w-full text-white pt-40 pb-32">
+      <main className="relative z-10 w-full text-white pt-28 md:pt-40 pb-20 md:pb-32">
         
         {/* Title Area */}
         <div className="grid content-start justify-items-center gap-6 text-center z-20 mb-20 px-4">
@@ -40,27 +40,27 @@ export default function AboutPage() {
             <span className="text-white/90 font-['Urbanist'] text-xl font-bold tracking-widest uppercase mb-4 block drop-shadow-lg">
               Who We Are
             </span>
-            <h1 className="text-5xl sm:text-7xl font-black text-white font-['Urbanist'] tracking-tighter mb-4 drop-shadow-xl">
+            <h1 className="text-4xl sm:text-6xl md:text-7xl font-black text-white font-['Urbanist'] tracking-tighter mb-4 drop-shadow-xl">
               About Flyggo
             </h1>
           </motion.div>
         </div>
 
         {/* Content Container */}
-        <div className="w-full max-w-5xl mx-auto px-6 grid grid-cols-1 md:grid-cols-2 gap-8 text-left">
+        <div className="w-full max-w-5xl mx-auto px-4 sm:px-6 grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8 text-left">
           
           <motion.div
             initial={{ opacity: 0, x: -30 }}
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true, margin: "-100px" }}
             transition={{ duration: 0.8 }}
-            className="bg-white/5 backdrop-blur-xl border border-white/10 p-8 md:p-12 rounded-[2rem] hover:border-white/20 transition-all flex flex-col gap-6"
+            className="bg-white/5 backdrop-blur-xl border border-white/10 p-6 sm:p-8 md:p-12 rounded-[2rem] hover:border-white/20 transition-all flex flex-col gap-5 md:gap-6"
           >
             <div className="w-14 h-14 rounded-full bg-white/10 flex items-center justify-center">
               <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
             </div>
-            <h3 className="text-3xl font-bold font-['Urbanist'] text-white">Our Core</h3>
-            <p className="text-white/70 text-lg leading-relaxed font-['Inter']">
+            <h3 className="text-2xl md:text-3xl font-bold font-['Urbanist'] text-white">Our Core</h3>
+            <p className="text-white/70 text-base md:text-lg leading-relaxed font-['Inter']">
               Technology is at the core of every successful business, and at Flyggo, we build the digital solutions that help businesses move forward with confidence. We partner with startups, MSMEs, and enterprises to create secure, scalable, and high-performing software tailored to their goals.
             </p>
           </motion.div>
@@ -70,13 +70,13 @@ export default function AboutPage() {
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true, margin: "-100px" }}
             transition={{ duration: 0.8, delay: 0.2 }}
-            className="bg-white/5 backdrop-blur-xl border border-white/10 p-8 md:p-12 rounded-[2rem] hover:border-white/20 transition-all flex flex-col gap-6"
+            className="bg-white/5 backdrop-blur-xl border border-white/10 p-6 sm:p-8 md:p-12 rounded-[2rem] hover:border-white/20 transition-all flex flex-col gap-5 md:gap-6"
           >
             <div className="w-14 h-14 rounded-full bg-white/10 flex items-center justify-center">
               <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg>
             </div>
-            <h3 className="text-3xl font-bold font-['Urbanist'] text-white">Our Expertise</h3>
-            <p className="text-white/70 text-lg leading-relaxed font-['Inter']">
+            <h3 className="text-2xl md:text-3xl font-bold font-['Urbanist'] text-white">Our Expertise</h3>
+            <p className="text-white/70 text-base md:text-lg leading-relaxed font-['Inter']">
               Our expertise spans website development, web applications, mobile applications, SaaS platforms, business automation, cloud solutions, and custom software development. Every project is built with a focus on performance, user experience, security, and long-term scalability.
             </p>
           </motion.div>
@@ -86,10 +86,10 @@ export default function AboutPage() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: "-100px" }}
             transition={{ duration: 0.8, delay: 0.4 }}
-            className="bg-gradient-to-br from-white/10 to-white/5 backdrop-blur-xl border border-white/10 p-8 md:p-12 rounded-[2rem] hover:border-white/20 transition-all flex flex-col gap-6 md:col-span-2 text-center items-center"
+            className="bg-gradient-to-br from-white/10 to-white/5 backdrop-blur-xl border border-white/10 p-6 sm:p-8 md:p-12 rounded-[2rem] hover:border-white/20 transition-all flex flex-col gap-5 md:gap-6 md:col-span-2 text-left md:text-center items-start md:items-center"
           >
-            <h3 className="text-3xl font-bold font-['Urbanist'] text-white">The Flyggo Philosophy</h3>
-            <p className="text-white/80 text-xl leading-relaxed font-['Inter'] max-w-4xl">
+            <h3 className="text-2xl md:text-3xl font-bold font-['Urbanist'] text-white">The Flyggo Philosophy</h3>
+            <p className="text-white/80 text-base md:text-xl leading-relaxed font-['Inter'] max-w-4xl">
               We believe technology should simplify operations, strengthen customer experiences, and support sustainable business growth. That's why we work closely with our clients from strategy and design through development, deployment, and ongoing support, ensuring every solution delivers measurable value. At Flyggo, we don't simply build digital products—we build technology that empowers businesses to innovate, grow, and succeed in an increasingly digital world.
             </p>
           </motion.div>

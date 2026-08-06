@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useEffect, useRef } from 'react';
-import { motion, useScroll, useTransform, useMotionTemplate, animate } from "framer-motion";
+import { motion, useScroll, useTransform, useMotionTemplate, animate, useInView } from "framer-motion";
 import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
 import Link from "next/link";
@@ -601,11 +601,28 @@ const Avatar = ({
 };
 // Isolated Counter Component
 const CenterCounter = () => {
+  const count = useRef<HTMLHeadingElement>(null);
+
+  useEffect(() => {
+    if (count.current) {
+      const controls = animate(0, 250, {
+        duration: 2.5,
+        ease: "easeOut",
+        onUpdate: (latest) => {
+          if (count.current) {
+            count.current.textContent = Math.round(latest) + "+";
+          }
+        },
+      });
+      return () => controls.stop();
+    }
+  }, []);
+
   return (
     <div className="absolute" style={{ animation: 'spin-right 30s linear infinite' }}>
       <div className="flex flex-col items-center justify-center bg-[#070319] w-[180px] h-[180px] rounded-full shadow-[0_0_30px_rgba(160,104,255,0.3)] border border-[#A068FF]/30">
-         <h2 className="font-['Urbanist'] text-[64px] font-medium text-white leading-none tracking-tight">
-           250+
+         <h2 ref={count} className="font-['Urbanist'] text-[64px] font-medium text-white leading-none tracking-tight">
+           0+
          </h2>
          <p className="font-['Urbanist'] text-[16px] font-semibold text-[#A068FF] uppercase tracking-wider mt-1">
            Projects

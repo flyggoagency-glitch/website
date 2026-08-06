@@ -1,12 +1,13 @@
 "use client";
 
-import React, { useRef } from 'react';
+import React, { useRef, useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { motion, useScroll, useTransform } from 'framer-motion';
 import { Footer } from '@/components/Footer';
 
 export default function FounderPage() {
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
   const containerRef = useRef(null);
   const { scrollYProgress } = useScroll({
     target: containerRef,
@@ -45,13 +46,22 @@ export default function FounderPage() {
         transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
         className="relative z-50 px-6 md:px-12 lg:px-16 pt-6 max-w-[1920px] mx-auto w-full"
       >
-        <nav className="bg-black/50 backdrop-blur-2xl border border-white/5 rounded-2xl px-6 py-4 flex items-center justify-between shadow-[0_8px_30px_rgb(0,0,0,0.5)]">
-          <Link href="/" className="text-2xl font-bold tracking-tighter text-white flex items-center gap-1 hover:opacity-80 transition-opacity">
-            Flyggo<sup className="text-xs font-normal text-white/50">®</sup>
-          </Link>
+        <nav className="bg-black/50 backdrop-blur-2xl border border-white/5 rounded-2xl px-6 py-4 flex flex-col md:flex-row md:items-center justify-between shadow-[0_8px_30px_rgb(0,0,0,0.5)]">
+          <div className="flex items-center justify-between">
+            <Link href="/" className="text-2xl font-bold tracking-tighter text-white flex items-center gap-1 hover:opacity-80 transition-opacity">
+              Flyggo<sup className="text-xs font-normal text-white/50">®</sup>
+            </Link>
+            <button 
+              className="md:hidden text-white p-2" 
+              onClick={() => setIsMenuOpen(!isMenuOpen)}
+              aria-label="Toggle menu"
+            >
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M4 6h16M4 12h16M4 18h16"></path></svg>
+            </button>
+          </div>
           
-          <div className="hidden md:flex items-center gap-8 text-sm font-medium text-white/60">
-            <Link href="/" className="hover:text-white transition-colors">Home</Link>
+          <div className={`${isMenuOpen ? 'flex' : 'hidden'} md:flex flex-col md:flex-row items-start md:items-center gap-4 md:gap-8 text-sm font-medium text-white/60 mt-6 md:mt-0 pb-2 md:pb-0`}>
+            <Link href="/" className="hover:text-white transition-colors text-white">Home</Link>
             <Link href="/flyggo-classic" className="hover:text-white transition-colors">Flyggo Classic</Link>
           </div>
         </nav>
@@ -60,7 +70,7 @@ export default function FounderPage() {
       <main className="relative z-10 flex-1 flex flex-col px-6 md:px-16 lg:px-24 w-full max-w-[1600px] mx-auto pb-32">
         
         {/* --- Hero Section --- */}
-        <div className="pt-24 pb-32 grid grid-cols-1 lg:grid-cols-12 gap-16 lg:gap-24 items-center">
+        <div className="pt-16 md:pt-24 pb-20 md:pb-32 grid grid-cols-1 lg:grid-cols-12 gap-12 md:gap-16 lg:gap-24 items-center">
           
           {/* Left Column: Image with 3D Float */}
           <motion.div 
@@ -85,7 +95,7 @@ export default function FounderPage() {
                 <div className="overflow-hidden">
                   <motion.h1 
                     initial={{ y: 50 }} animate={{ y: 0 }} transition={{ delay: 0.5, duration: 0.8 }}
-                    className="text-5xl lg:text-6xl font-['Instrument_Serif'] text-white mb-2 tracking-tight"
+                    className="text-4xl lg:text-6xl font-['Instrument_Serif'] text-white mb-2 tracking-tight"
                   >
                     Nikesh S
                   </motion.h1>
@@ -104,15 +114,15 @@ export default function FounderPage() {
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 1, delay: 0.3, ease: [0.16, 1, 0.3, 1] }}
             >
-              <h2 className="text-5xl md:text-6xl lg:text-[72px] font-black tracking-tighter mb-4 text-white">
+              <h2 className="text-4xl md:text-6xl lg:text-[72px] font-black tracking-tighter mb-4 text-white">
                 About the Founder
               </h2>
               
-              <h3 className="text-2xl md:text-3xl font-semibold mb-10 leading-tight text-white/80">
+              <h3 className="text-xl md:text-3xl font-semibold mb-8 md:mb-10 leading-tight text-white/80">
                 Empowering businesses through <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-300 via-white to-emerald-300">innovative technology</span>.
               </h3>
               
-              <div className="space-y-8 text-xl text-white/60 leading-relaxed font-light">
+              <div className="space-y-6 md:space-y-8 text-base md:text-xl text-white/60 leading-relaxed font-light">
                 <p>
                   Flyggo was founded with a singular vision: to empower businesses through innovative technology and seamless digital solutions. We focus on helping startups, MSMEs, and growing brands establish an undeniable digital presence.
                 </p>
@@ -132,13 +142,13 @@ export default function FounderPage() {
           transition={{ duration: 1 }}
           className="mb-40"
         >
-          <div className="bg-gradient-to-b from-white/[0.08] to-transparent border border-white/10 rounded-[3rem] p-12 md:p-24 relative overflow-hidden text-center backdrop-blur-3xl shadow-2xl">
+          <div className="bg-gradient-to-b from-white/[0.08] to-transparent border border-white/10 rounded-[2rem] md:rounded-[3rem] p-8 md:p-24 relative overflow-hidden text-center backdrop-blur-3xl shadow-2xl">
             {/* Top glowing line */}
             <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[50%] h-[1px] bg-gradient-to-r from-transparent via-cyan-400 to-transparent opacity-50" />
             
             <div className="relative z-10 max-w-4xl mx-auto">
               <svg className="w-12 h-12 mx-auto mb-10 text-white/20" fill="currentColor" viewBox="0 0 24 24"><path d="M14.017 21v-7.391c0-5.704 3.731-9.57 8.983-10.609l.995 2.151c-2.432.917-3.995 3.638-3.995 5.849h4v10h-9.983zm-14.017 0v-7.391c0-5.704 3.748-9.57 9-10.609l.996 2.151c-2.433.917-3.996 3.638-3.996 5.849h3.983v10h-9.983z"/></svg>
-              <h3 className="text-3xl md:text-5xl font-['Instrument_Serif'] leading-[1.2] mb-10 text-white">
+              <h3 className="text-2xl md:text-5xl font-['Instrument_Serif'] leading-[1.2] mb-8 md:mb-10 text-white">
                 "Great businesses are built on innovation, trust, and the courage to create something meaningful."
               </h3>
               <p className="text-white/40 font-medium tracking-[0.2em] uppercase text-xs">Nikesh S</p>
