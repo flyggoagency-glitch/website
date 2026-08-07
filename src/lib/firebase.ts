@@ -1,5 +1,5 @@
 import { initializeApp, getApps, getApp } from "firebase/app";
-import { getFirestore } from "firebase/firestore";
+import { getFirestore } from "firebase/firestore/lite";
 // We conditionally import getAnalytics since it's only supported in the browser environment
 import { getAnalytics, isSupported } from "firebase/analytics";
 

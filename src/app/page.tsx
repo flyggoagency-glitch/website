@@ -6,7 +6,7 @@ import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
 import Link from "next/link";
 import { Footer } from '@/components/Footer';
-import { collection, query, orderBy, getDocs } from 'firebase/firestore';
+import { collection, query, orderBy, getDocs } from 'firebase/firestore/lite';
 import { db } from '@/lib/firebase';
 
 function cn(...inputs: ClassValue[]) {

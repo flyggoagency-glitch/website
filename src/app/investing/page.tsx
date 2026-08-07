@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
-import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
+import { collection, addDoc, serverTimestamp } from 'firebase/firestore/lite';
 import { db } from '@/lib/firebase';
 import { ClassicFooter } from '@/components/ClassicFooter';
 import { ClassicNavbar } from '@/components/ClassicNavbar';
@@ -55,7 +55,7 @@ export default function InvestingPage() {
     setError('');
 
     try {
-      const { collection, addDoc, serverTimestamp } = await import('firebase/firestore');
+      const { collection, addDoc, serverTimestamp } = await import('firebase/firestore/lite');
       const { db } = await import('@/lib/firebase');
 
       // Save to Firestore with standard auto-generated ID

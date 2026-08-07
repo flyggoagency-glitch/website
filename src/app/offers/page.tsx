@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { collection, query, orderBy, getDocs } from 'firebase/firestore';
+import { collection, query, orderBy, getDocs } from 'firebase/firestore/lite';
 import { db } from '@/lib/firebase';
 import { motion } from 'framer-motion';
 import { FadeIn } from '@/components/animations/FadeIn';

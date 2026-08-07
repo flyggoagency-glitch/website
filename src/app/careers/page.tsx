@@ -3,7 +3,7 @@
 import React, { useEffect, useState } from 'react';
 
 import Link from 'next/link';
-import { collection, query, orderBy, getDocs, addDoc, serverTimestamp } from 'firebase/firestore';
+import { collection, query, orderBy, getDocs, addDoc, serverTimestamp } from 'firebase/firestore/lite';
 import { db } from '@/lib/firebase';
 import { Footer } from '@/components/Footer';
 import { FadeIn } from '@/components/animations/FadeIn';

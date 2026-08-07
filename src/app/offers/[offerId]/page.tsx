@@ -1,5 +1,5 @@
 import OfferClient from './OfferClient';
-import { collection, getDocs } from 'firebase/firestore';
+import { collection, getDocs } from 'firebase/firestore/lite';
 import { db } from '@/lib/firebase';
 
 export async function generateStaticParams() {

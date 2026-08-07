@@ -64,7 +64,7 @@ export default function StartProjectPage() {
     setIsSubmitting(true);
     
     try {
-      const { doc, setDoc, serverTimestamp } = await import('firebase/firestore');
+      const { doc, setDoc, serverTimestamp } = await import('firebase/firestore/lite');
       const { db } = await import('@/lib/firebase');
       
       // 1. Generate Custom ID
