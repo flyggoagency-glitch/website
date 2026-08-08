@@ -54,6 +54,9 @@ export const Footer = () => {
             <p className="text-white/50 text-sm font-['Inter']">
               &copy; {currentYear} Flyggo. All rights reserved.
             </p>
+            <a href="mailto:support@flyggo.in" className="text-white/50 hover:text-white transition-colors text-sm font-['Inter']">
+              support@flyggo.in
+            </a>
           </div>
 
           {/* Links */}
