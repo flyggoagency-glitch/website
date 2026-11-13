@@ -3,6 +3,9 @@ import type { Metadata } from "next";
 export const metadata: Metadata = {
   title: "Nikesh S - Founder & CEO",
   description: "Learn more about Nikesh S, the Founder and CEO of Flyggo. Nikesh is driving innovation in tech, SaaS, and digital product development.",
+  alternates: {
+    canonical: "https://flyggo.com/founder",
+  },
   keywords: [
     "Nikesh S", 
     "Nikesh Flyggo", 

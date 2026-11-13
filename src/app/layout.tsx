@@ -9,9 +9,6 @@ export const metadata: Metadata = {
   },
   description: "Flyggo builds AI-powered product solutions, business websites, CRM systems and automation solutions to help businesses grow.",
   applicationName: "Flyggo",
-  alternates: {
-    canonical: "https://flyggo.com/",
-  },
   keywords: [
     "Flyggo", 
     "Flygo", // Common misspelling
