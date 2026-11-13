@@ -400,6 +400,21 @@ const AnimatedBackgroundLines = () => {
   );
 };
 
+// Organization Structured Data (JSON-LD)
+const organizationSchema = {
+  "@context": "https://schema.org",
+  "@type": "Organization",
+  "@id": "https://flyggo.com/#organization",
+  "name": "Flyggo",
+  "alternateName": "Flyggo",
+  "url": "https://flyggo.com/",
+  "description": "AI-powered product solutions company.",
+  "sameAs": [
+    "https://www.instagram.com/flyggo.media",
+    "https://www.linkedin.com/company/flyggo/"
+  ]
+};
+
 export default function FlyggoLandingPage() {
   // Companies for ticker
   const [companies, setCompanies] = useState<string[]>([
@@ -438,6 +453,13 @@ export default function FlyggoLandingPage() {
 
   return (
     <div className="w-full bg-[#0a0a0a] min-h-screen">
+      {/* Organization Structured Data (JSON-LD) */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(organizationSchema),
+        }}
+      />
       
       {/* HERO SECTION */}
       <div 

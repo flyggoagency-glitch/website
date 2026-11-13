@@ -2,11 +2,16 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
+  metadataBase: new URL("https://flyggo.com"),
   title: {
-    default: "Flyggo | Where Brands Learn to Fly",
+    default: "Flyggo | AI-Powered Product Solutions",
     template: "%s | Flyggo",
   },
-  description: "Your Global Tech Partner is Just One Click Away. We build websites, mobile apps, SaaS, and software for MSMEs to large scale enterprises.",
+  description: "Flyggo builds AI-powered product solutions, business websites, CRM systems and automation solutions to help businesses grow.",
+  applicationName: "Flyggo",
+  alternates: {
+    canonical: "https://flyggo.com/",
+  },
   keywords: [
     "Flyggo", 
     "Flygo", // Common misspelling
@@ -21,19 +26,18 @@ export const metadata: Metadata = {
   authors: [{ name: "Nikesh S" }],
   creator: "Nikesh S",
   publisher: "Flyggo",
-  metadataBase: new URL("https://flyggo.com"),
   openGraph: {
     type: "website",
     locale: "en_US",
-    url: "https://flyggo.com",
+    url: "https://flyggo.com/",
     siteName: "Flyggo",
-    title: "Flyggo | Where Brands Learn to Fly",
-    description: "Your Global Tech Partner is Just One Click Away. We build websites, mobile apps, SaaS, and software.",
+    title: "Flyggo | AI-Powered Product Solutions",
+    description: "Flyggo builds AI-powered product solutions, business websites, CRM systems and automation solutions to help businesses grow.",
   },
   twitter: {
     card: "summary_large_image",
-    title: "Flyggo | Global Tech Partner",
-    description: "Building the future of tech. Websites, Mobile Apps, SaaS.",
+    title: "Flyggo | AI-Powered Product Solutions",
+    description: "Flyggo builds AI-powered product solutions, business websites, CRM systems and automation solutions to help businesses grow.",
   },
   robots: {
     index: true,
